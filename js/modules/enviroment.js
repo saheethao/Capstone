@@ -15,7 +15,7 @@ function basic(pop, mutationFunc, crossoverFunc, objectiveFunc, selectionFunc, a
 		/* Offspring */
 		let off = [];
 		for (let i = 0; i < pop.length; i++) {
-			off.push(pop[i].template());
+			off.push(pop[i].clone());
 		}
 		off = crossoverFunc(off);
 		off = mutationFunc(off);

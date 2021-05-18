@@ -3,51 +3,70 @@
 
 /* START OF SELECTION MODULES */
 
+export function nothing(args) {
+	let indArr = args[0];
+	return indArr;
+}
+
 /*
  * Get numSelect random individuals
- * args: none
+ * args: <indArr> <numSelect>
  */
-function random(indArr, numSelect, objMod, objArgs, args) {
-	return _.sample(indArr, numSelect);
+export function random(args) {
+	let indArr = args[0];
+	let numSelect = args[1];
+
+	let shuffled = _.shuffle(indArr);
+	return [shuffled.slice(0, numSelect), shuffled.slice(numSelect, shuffled.length)];
 }
 
 /*
  * Get numSelect individuals using tournament (MAX)
- * args: <tournament size>
+ * args: <indArr> <numSelect> <objMod> <objArgs> <tournament size>
  */
-function tournamentBest(indArr, numSelect, objMod, objArgs, args) {
-	console.log(indArr);
+export function tournamentBest(args) {
+	let indArr = args[0];
+	let numSelect = args[1];
+	let objMod = args[2];
+	let objArgs = args[3];
 	let tourn = _.shuffle(indArr);
-	tourn = tourn.slice(0, args[0]);
+	tourn = tourn.slice(0, args[4]);
 	tourn.sort(
 		function(a, b) { 
 			return objMod(b, objArgs) - objMod(a, objArgs);
 		}
 	);
-	return tourn.slice(0, numSelect);
+	return [tourn.slice(0, numSelect), tourn.slice(numSelect, shuffled.length)];
 }
 
 /*
  * Get numSelect individuals using tournament (MIN)
- * args: <tournament size>
+ * args: <indArr> <numSelect> <objMod> <objArgs> <tournament size>
  */
-function tournamentWorst(indArr, numSelect, objMod, objArgs, args) {
-	console.log(indArr);
+export function tournamentWorst(args) {
+	let indArr = args[0];
+	let numSelect = args[1];
+	let objMod = args[2];
+	let objArgs = args[3];
 	let tourn = _.shuffle(indArr);
-	tourn = tourn.slice(0, args[0]);
+	tourn = tourn.slice(0, args[4]);
 	tourn.sort(
 		function(a, b) { 
 			return objMod(a, objArgs) - objMod(b, objArgs);
 		}
 	);
-	return tourn.slice(0, numSelect);
+	return [tourn.slice(0, numSelect), tourn.slice(numSelect, shuffled.length)];
 }
 
 /*
  * Get numSelect individuals using stochastic acceptance (MAX)
- * args: 
+ * args: <indArr> <numSelect> <objMod> <objArgs>
  */
-function accpetanceBest(indArr, numSelect, objMod, objArgs, args) {
+export function accpetanceBest(args) {
+	let indArr = args[0];
+	let numSelect = args[1];
+	let objMod = args[2];
+	let objArgs = args[3];
 	indArr.sort(
 		function(a, b) { 
 			return objMod(b, objArgs) - objMod(a, objArgs);
@@ -67,20 +86,24 @@ function accpetanceBest(indArr, numSelect, objMod, objArgs, args) {
 			let prob = curFitness / bestFit;
 			if (Math.random() < prob) {
 				isAccepted = true;
-				
 			}
 		}
 		selectedInds.push(selectedInd);
+		shuffled.shift();
 	}
 	
-	return selectedInds;
+	return [selectedInds, shuffled];
 }
 
 /*
  * Get numSelect individuals using stochastic acceptance (MIN)
- * args: 
+ * args: <indArr> <numSelect> <objMod> <objArgs>
  */
-function accpetanceWorst(indArr, numSelect, objMod, objArgs, args) {
+export function accpetanceWorst(args) {
+	let indArr = args[0];
+	let numSelect = args[1];
+	let objMod = args[2];
+	let objArgs = args[3];
 	indArr.sort(
 		function(a, b) { 
 			return objMod(b, objArgs) - objMod(a, objArgs);
@@ -104,37 +127,56 @@ function accpetanceWorst(indArr, numSelect, objMod, objArgs, args) {
 			}
 		}
 		selectedInds.push(selectedInd);
+		selectedInds.push(selectedInd);
 	}
 	
-	return selectedInds;
+	return [selectedInds, shuffled];
 }
 
 /*
  * Get numSelect best individuals
- * args: 
+ * args: <indArr> <numSelect> <objMod> <objArgs>
  */
-function best(indArr, numSelect, objMod, objArgs, args) {
+export function best(args) {
+	let indArr = args[0];
+	let numSelect = args[1];
+	let objMod = args[2];
+	let objArgs = args[3];
 	indArr.sort(
-		function(a, b) { 
-			return objMod(b, objArgs) - objMod(a, objArgs);
+		function(a, b) {
+			let objArgsA = _.cloneDeep(objArgs);
+			objArgsA[0] = a;
+			let objArgsB = _.cloneDeep(objArgs);
+			objArgsB[0] = b;
+
+			return objMod(objArgsB) - objMod(objArgsA);
 		}
 	);
 	
-	return indArr.slice(0, numSelect);
+	return [indArr.slice(0, numSelect), indArr.slice(numSelect, indArr.length)];
 }
 
 /*
  * Get numSelect worst individuals
- * args: 
+ * args: <indArr> <numSelect> <objMod> <objArgs>
  */
-function worst(indArr, numSelect, objMod, objArgs, args) {
+export function worst(args) {
+	let indArr = args[0];
+	let numSelect = args[1];
+	let objMod = args[2];
+	let objArgs = args[3];
 	indArr.sort(
-		function(a, b) { 
-			return objMod(a, objArgs) - objMod(b, objArgs);
+		function(a, b) {
+			let objArgsA = _.cloneDeep(objArgs);
+			objArgsA[0] = a;
+			let objArgsB = _.cloneDeep(objArgs);
+			objArgsB[0] = b;
+
+			return objMod(objArgsA) - objMod(objArgsB);
 		}
 	);
 	
-	return indArr.slice(0, numSelect);
+	return [indArr.slice(0, numSelect), indArr.slice(numSelect, indArr.length)];
 }
 
 /* END OF SELECTION MODULES */

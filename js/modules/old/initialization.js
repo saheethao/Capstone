@@ -5,9 +5,10 @@
 
 /*
  * Create chromosomes with random 0s and 1s
- * args: none
+ * args: <length>
  */
-function random(length, args) {
+export function random(args) {
+	let length = args[0]
 	let chromosome = [];
 	
 	for (let i = 0; i < length; i++) {
@@ -19,14 +20,15 @@ function random(length, args) {
 
 /*
  * Create chromosome based on string
- * args: <str of gene(s)>
+ * args: <length> <str of gene(s)>
  */
-function pattern(length, args) {
+export function pattern(args) {
+	let length = args[0]
 	let chromosome = [];
 	
 	for (let i = 0; i < length; i++) {
-		let j = i % args[0].length;
-		let c = args[0].charAt(j);
+		let j = i % args[1].length;
+		let c = args[1].charAt(j);
 		chromosome.push(parseInt(c));	
 	}
 	

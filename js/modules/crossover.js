@@ -5,14 +5,19 @@
 
 /*
  * Choose n points from parents
- * args: <n>
+ * args: <parents> <numOff> <n> <rate>
  */
-function npoint(parents, numOff, args) {
+export function npoint(args) {
+	if (!(Math.random() < args[3])) {
+		return null;
+	}
+	let parents = args[0];
+	let numOff = args[1];
 	
 	let fullGenomes = [];
 	let offspring = [];
 	for (let i = 0; i < parents.length; i++) {
-		let newInd = parents[i].template();
+		let newInd = parents[i].clone();
 		offspring.push(newInd);
 		let fullGenome = newInd.genome.concat(newInd.hist);
 		fullGenomes.push(fullGenome);
@@ -21,12 +26,10 @@ function npoint(parents, numOff, args) {
 	let offspringFullGenomes = [];
 	for (let i = 0; i < numOff; i++) {
 		let positions = _.shuffle(_.range(1, fullGenomes[0].length - 1));
-		let points = positions.slice(0, args[0]);
+		let points = positions.slice(0, args[2]);
 		points.push(0);
 		points.push(fullGenomes[0].length);
 		points.sort();
-		console.log('points');
-		console.log(points);
 		_.shuffle(fullGenomes);
 		let off = [];
 		for (let p = 0; p < points.length; p++) {
@@ -53,14 +56,19 @@ function npoint(parents, numOff, args) {
 
 /*
  * For each offspring, use a random parent as a base. Then use the other parents for genetic material.
- * args: <chance>
+ * args: <parents> <numOff> <chance> <rate>
  */
-function chance(parents, numOff, args) {
+export function chance(args) {
+	if (!(Math.random() < args[3])) {
+		return null;
+	}
+	let parents = args[0];
+	let numOff = args[1];
 	
 	let fullGenomes = [];
 	let offspring = [];
 	for (let i = 0; i < parents.length; i++) {
-		let newInd = parents[i].template();
+		let newInd = parents[i].clone();
 		offspring.push(newInd);
 		let fullGenome = newInd.genome.concat(newInd.hist);
 		fullGenomes.push(fullGenome);
@@ -74,7 +82,7 @@ function chance(parents, numOff, args) {
 		let rest = fullGenomes.slice(1, fullGenomes.length);
 
 		for (let p = 0; p < fullGenomes[0].length; p++) {
-			if (Math.random() < args[0]) {
+			if (Math.random() < args[2]) {
 				let par = [];
 				if (rest.length > 1) {
 					par = _.sample(rest, 1);
@@ -102,14 +110,19 @@ function chance(parents, numOff, args) {
 
 /*
  * For each offspring, use a random parent from base as a base. Then use the other parents for genetic material.
- * args: <chance> <base(s) should be an array>
+ * args: <parents> <numOff> <chance> <base(s) should be an array> <rate>
  */
-function chanceBase(parents, numOff, args) {
+export function chanceBase(args) {
+	if (!(Math.random() < args[4])) {
+		return null;
+	}
+	let parents = args[0];
+	let numOff = args[1];
 	
 	let fullGenomes = [];
 	let offspring = [];
 	for (let i = 0; i < parents.length; i++) {
-		let newInd = parents[i].template();
+		let newInd = parents[i].clone();
 		offspring.push(newInd);
 		let fullGenome = newInd.genome.concat(newInd.hist);
 		fullGenomes.push(fullGenome);
@@ -121,15 +134,15 @@ function chanceBase(parents, numOff, args) {
 		let off = [];
 		let base = [];
 		if (base.length > 1) {
-			base = _.sample(args[1], 1);
+			base = _.sample(args[3], 1);
 		} else {
-			base = args[1][0];
+			base = args[3][0];
 		}
 		base = base.genome.concat(base.hist);
 		let rest = fullGenomes;
 
 		for (let p = 0; p < fullGenomes[0].length; p++) {
-			if (Math.random() < args[0]) {
+			if (Math.random() < args[2]) {
 				let par = [];
 				if (rest.length > 1) {
 					par = _.sample(rest, 1);
